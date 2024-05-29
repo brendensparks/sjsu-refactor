@@ -4,6 +4,14 @@ Text elements no larger than 70ch.
 
 */
 
+/*
+Lea Verou's pseudo-private properties from her CSS Variable Secrets presentation
+--_color: var(--color, [fallback/default]);
+...
+color: var(--_color);
+
+*/
+
 /* LAYERS
 from Modern CSS for Dynamic Component-based Architecture - Stephanie Eckles 
 layer order suggestion:
@@ -15,13 +23,11 @@ layer order suggestion:
 @layer reset {
 
 :root {
-    --background-color: initial;
-    --text-color: initial;
     --link-color: currentColor;
     --font-body: system-ui, sans-serif;
     --font-display: 'Times New Roman', serif;
-    --measure: 66ch;
-    --vr: 1rem; /* vr=vertical rhythm */
+    --measure: 66ch; /* if 70ch limit is axiom, why < 70 here? -b 5.29 */
+    --vr: 1rem;
 }
 
 *,
@@ -31,10 +37,13 @@ layer order suggestion:
 }
 
 * {
+    --_background-color: var(--background-color, white);
+    --_color: var(--color, var(--text-color, black));
+    --_max-inline-size:var(--measure,initial);
     margin: 0;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    /* max-inline-size:var(--measure); */
+    background-color: var(--_background-color);
+    color: var(--_color);
+    max-inline-size:var(--_max-inline-size);
 }
 
 html {
@@ -72,10 +81,11 @@ select {
 }
 
 body {
+    --_font-family: var(--font-body, inherit);
     min-height: 100vh;
     line-height: 1.5;
     max-inline-size: none;
-    font-family: var(--font-body);
+    font-family: var(--_font-family);
 }
 
 h1,
@@ -94,12 +104,22 @@ h3,
 h4,
 h5,
 h6 {
+    --_font-family: var(--font-display, inherit);
+    --_font-size: var(--font-size, initial);
     text-wrap: balance;
-    font-family: var(--font-display);
+    font-family: var(--_font-family);
+    font-size: var(--_font-size);
+}
+
+p, blockquote {
+    --_font-family: var(--font-body, inherit);
+    --_font-size: var(--font-size, initial);
+    font-family: var(--_font-family);
+    font-size: var(--_font-size);
 }
 
 a {
-    color: var(--link-color);
+    --color: var(--link-color, blue);
 }
 
 /* <a> elements that don't have a class get default styles */
@@ -107,11 +127,10 @@ a:not([class]) {
     text-decoration-skip-ink: auto;
     text-decoration-thickness: max(0.08em, 1px);
     text-underline-offset: 0.15em;
-    color: var(--link-color);
 }
 
 a[aria-current] {
-    color: var(--text-color);
+    --color: var(--text-color, black);
 }
 
 hr {
@@ -161,7 +180,7 @@ textarea:not([rows]) {
 
 @layer theme {
 
-:root {
+:root {    
     --sjsu-font-body: 'Helvetica Neue', system-ui, sans-serif;
     --sjsu-font-display: 'Nunito Sans', Verdana, sans-serif;
     --sjsu-font-spartan: 'SJSUSpartan', 'Times New Roman', serif;
@@ -174,8 +193,6 @@ textarea:not([rows]) {
     --sjsu-color-paseo-gray: #ededed;
     --sjsu-color-normal-gray: #9b9b9b;
     --sjsu-color-orange: #f08700;
-    --color-white: #ffffff;
-    --color-black: #000000;
     /* vr = vertical rhythm */
     --sjsu-vr: 2rem;
     --sjsu-2vr: calc(2 * var(--sjsu-vr));
@@ -186,9 +203,14 @@ textarea:not([rows]) {
     --sjsu-grid-gap: 2vw;
     --padding: clamp(1rem, 3%, 1.5rem);
     --padding-double: clamp(2rem, 6%, 3rem);
+    --padding-triple: clamp(3rem, 9%, 4.5rem);
     --padding-extra: clamp(4rem, 12%, 6rem);
     --padding-half: clamp(0.5rem, 1.5%, 1rem);
     --container-max: var(--sjsu-layout-width);
+    --font-body: var(--sjsu-font-body, inherit);
+    --font-display: var(--sjsu-font-display, inherit);
+    --link-color: var(--sjsu-color-blue);
+    --text-color: var(--sjsu-color-not-quite-black);
 
     /* UTOPIA - fluid typography and type scale
 https: //utopia.fyi/type/calculator?c=320,18,1.2,1240,23,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12  */
@@ -204,10 +226,10 @@ https: //utopia.fyi/type/calculator?c=320,18,1.2,1240,23,1.25,5,2,&s=0.75|0.5|0.
 }
 
 body {
-    --background-color: var(--color-white);
-    --text-color: var(--sjsu-color-not-quite-black);
-    --font-body: var(--sjsu-font-body);
-    font-size: var(--step-0);
+    --_font-size: var(--font-size, var(--step-0, 1rem));
+    --_font-family: var(--font-body, inherit);
+    font-size: var(--_font-size);
+    font-family: var(--_font-family);    
 }
 
 header, main, footer {
@@ -216,33 +238,33 @@ header, main, footer {
 
 
 h1 {
-    --font-display: var(--sjsu-font-display);
-    font-size: var(--step-4);
+    --font-family: var(--font-display, inherit);
+    --font-size: var(--step-4, initial);
 }
 
 h2 {
-    --font-display: var(--sjsu-font-display);
-    font-size: var(--step-3);
+    --font-family: var(--font-display, inherit);
+    --font-size: var(--step-3, initial);
 }
 
 h3 {
-    --font-display: var(--sjsu-font-display);
-    font-size: var(--step-2);
+    --font-family: var(--font-display, inherit);
+    --font-size: var(--step-2, initial);
 }
 
 h4 {
-    --font-display: var(--sjsu-font-display);
-    font-size: var(--step-1);
+    --font-family: var(--font-display, inherit);
+    --font-size: var(--step-1, initial);
 }
 
 h5 {
-    --font-display: var(--sjsu-font-display);
-    font-size: var(--step--1);
+    --font-family: var(--font-display, inherit);
+    --font-size: var(--step-0, initial);
 }
 
 h6 {
-    --font-display: var(--sjsu-font-display);
-    font-size: var(--step--2);
+    --font-family: var(--font-display, inherit);
+    --font-size: var(--step--1, initial);
 }
 
 nav ul {
@@ -256,64 +278,34 @@ nav a:not(:hover) {
 }
 
 blockquote {
-    /* previous settings 
-    max-width: 900px;
-    margin: 30px auto;
-    box-sizing: border-box;
-    padding: 30px 0 10px 60px;
-    position: relative;
-    line-height: 1.3;
-    color: #333333;
-    border: none;
-    */
-    --font-display: var(--sjsu-font-display);
+    --font-family: var(--font-body, inherit);
+    --font-size: var(--step-0, initial);
+    margin-block: var(--step-1, 1.3rem);
+    margin-inline: auto;
+    padding-block-start: var(--step-1, 1.3rem);
+    padding-inline-end: 0;
+    padding-block-end: var(--step--2, 0.43rem);
+    padding-inline-start: var(--step-3, 2.6rem);
 }
 
 blockquote::before {
     content: "\201C";
     position: absolute;
-    font-size: 4em;
+    font-size: var(--step-5, 4rem);
     font-weight: 800;
+    /* Gotta find logical property replacements for these -b 5.29 */
     left: 0;
     top: 0;
 }
 
 hr {
-    border-top: 1px solid var(--sjsu-color-normal-gray);
-}
-
-.title-page {
-    font-size:var(--step-4);
-}
-
-.title-parent-org {
-    font-size:var(--step-3);
-}
-
-.nav-site a {
-    padding-inline: var(--padding);    
-    padding-block: var(--padding-half);
-}
-
-/* indented nav 
-.nav-site a:not(:first-child) {
-    padding-inline-start: var(--padding);
-}
-
-.nav-site a:not(:last-child) {
-    padding-inline-end: var(--padding);
-}
-*/
-.nav-site a:hover, .nav-site a:focus {
-    --background-color: var(--sjsu-color-blue);
-    --text-color: var(--color-white);
-    --link-color: var(--color-white);
+    border-block-start: 1px solid var(--sjsu-color-normal-gray);
 }
 
 .sjsu-theme-blue {
     --background-color: var(--sjsu-color-blue);
-    --text-color: var(--color-white);
-    --link-color: var(--color-white);
+    --text-color: white;
+    --link-color: white;
 }
 
 .sjsu-theme-light-gray {
@@ -323,7 +315,7 @@ hr {
 }
 
 .sjsu-theme-default {
-    --background-color: var(--color-white);
+    --background-color: white;
     --text-color: var(--sjsu-color-not-quite-black);
     --link-color: var(--sjsu-color-blue);
 }
@@ -350,107 +342,104 @@ hr {
             outline-offset: calc(var(--border-thin) * -1);
         }
 
-center-l {
-display: block;
-box-sizing: content-box;
-margin-inline: auto;
-max-inline-size: var(--measure);
+    center-l {
+    display: block;
+    box-sizing: content-box;
+    margin-inline: auto;
+    max-inline-size: var(--measure);
+    }
+
+    cluster-l {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    }
+
+    container-l {
+    display: block;
+    }
+
+    cover-l {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 100vh;
+    padding: var(--s1);
+    }
+
+    frame-l {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+    frame-l>img,
+    frame-l>video {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    }
+
+    grid-l {
+    display: grid;
+    grid-gap: var(--s1);
+    align-content: start;
+    grid-template-columns: 100%;
+    }
+
+    grid-l {
+    display: grid;
+    grid-gap: var(--s1);
+    align-content: start;
+    grid-template-columns: 100%;
+    }
+
+    icon-l svg {
+    height: 0.75em;
+    height: 1cap;
+    width: 0.75em;
+    width: 1cap;
+    }
+
+    imposter-l {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+    }
+
+    sidebar-l {
+    display: flex;
+    flex-wrap: wrap;
+    }
+
+    sidebar-l>* {
+    flex-grow: 1;
+    }
+
+    stack-l {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    }
+
+    stack-l>*+* {
+    margin-block-start: var(--s1);
+    }
+
+    switcher-l {
+    display: flex;
+    flex-wrap: wrap;
+    }
+
+    switcher-l>* {
+    flex-basis: calc((var(--measure) - 100%) * 999);
+    flex-grow: 1;
+    }
+
 }
-
-cluster-l {
-display: flex;
-flex-wrap: wrap;
-justify-content: flex-start;
-align-items: flex-start;
-}
-
-container-l {
-display: block;
-}
-
-cover-l {
-display: flex;
-flex-direction: column;
-min-block-size: 100vh;
-padding: var(--s1);
-}
-
-frame-l {
-aspect-ratio: 16 / 9;
-overflow: hidden;
-display: flex;
-justify-content: center;
-align-items: center;
-}
-
-frame-l>img,
-frame-l>video {
-inline-size: 100%;
-block-size: 100%;
-object-fit: cover;
-}
-
-grid-l {
-display: grid;
-grid-gap: var(--s1);
-align-content: start;
-grid-template-columns: 100%;
-}
-
-grid-l {
-display: grid;
-grid-gap: var(--s1);
-align-content: start;
-grid-template-columns: 100%;
-}
-
-icon-l svg {
-height: 0.75em;
-height: 1cap;
-width: 0.75em;
-width: 1cap;
-}
-
-imposter-l {
-position: absolute;
-inset-block-start: 50%;
-inset-inline-start: 50%;
-transform: translate(-50%, -50%);
-}
-
-sidebar-l {
-display: flex;
-flex-wrap: wrap;
-}
-
-sidebar-l>* {
-flex-grow: 1;
-}
-
-stack-l {
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-}
-
-stack-l>*+* {
-margin-block-start: var(--s1);
-}
-
-switcher-l {
-display: flex;
-flex-wrap: wrap;
-}
-
-switcher-l>* {
-flex-basis: calc((var(--measure) - 100%) * 999);
-flex-grow: 1;
-}
-
-}
-
-
-
 
 /* from Scaling CSS Layout Beyond Pixels - Stephanie Eckles 
 
@@ -466,7 +455,8 @@ Super flexible container element that automatically manages its own width based 
 }
 
 /* from Modern CSS for Dynamic Component-based Architecture - Stephanie Eckles
-This utility creates a responsive set of columns that are auto-generated depending on the amount of available inline space. Includes custom property to define the minimum allowed size for a column, which will function as a "breakpoint" for each column before causing the overflow to become new rows. For the most flexibility, I also like to include a custom property to allow overriding the `gap`. */
+"This utility creates a responsive set of columns that are auto-generated depending on the amount of available inline space. Includes custom property to define the minimum allowed size for a column, which will function as a "breakpoint" for each column before causing the overflow to become new rows. For the most flexibility, I also like to include a custom property to allow overriding the `gap`."
+ */
 
 .layout-grid {
     --layout-grid-min: var(--sjsu-grid-min, 30ch);
@@ -488,7 +478,7 @@ This utility creates a responsive set of columns that are auto-generated dependi
 @layer components {
 
 /* breadcrumb */
-/* a nav element for .bc? */
+/* a nav element for .bc? -b */
 .breadcrumb {
     font-size: var(--step--2);
     background: var(--sjsu-color-white);
@@ -527,7 +517,13 @@ This utility creates a responsive set of columns that are auto-generated dependi
 */
 
 
-/* This component has a de-facto API that allows for modular control over features using custom properties. */
+/* .button
+This component has a de-facto API that allows for modular control over features using custom properties.
+
+source? -b
+
+*/
+
 .button {
     color: var(--button-color, var(--primary));
     background-color: var(--button-bg, var(--accent));
@@ -562,6 +558,47 @@ This utility creates a responsive set of columns that are auto-generated dependi
 .button:focus-visible {
     --outline-style: dashed;
     --outline-offset: -0.35em;
+}
+
+/* /.button */
+
+
+/*
+re: ".title-page"
+Are single-property CSS classes necessary for a templated page if we can pass variable declarations in a style attribute from within the template? -b 5.29
+Yes; style should be as separated from the XSL as possible. -b 5.29
+*/
+
+.title-site {
+    --font-size: var(--step-3);
+}
+
+.title-parent-org {
+    --font-size:var(--step-2);
+}
+
+.nav-site a {
+    padding-inline: var(--padding);    
+    padding-block: var(--padding-half);
+}
+
+/* indented nav 
+.nav-site a:not(:first-child) {
+    padding-inline-start: var(--padding);
+}
+
+.nav-site a:not(:last-child) {
+    padding-inline-end: var(--padding);
+}
+*/
+.nav-site a:hover, .nav-site a:focus {
+    --background-color: var(--sjsu-color-blue);
+    --text-color: var(--color-white);
+    --link-color: var(--color-white);
+}
+
+.title-page {
+    --font-size:var(--step-4);
 }
 
 }
