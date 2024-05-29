@@ -1,0 +1,35 @@
+<div class="topbar">
+
+    <nav class="global-nav">
+
+        <button class="" global-nav__toggle" aria-expanded="false" data-popup>Menu</button>
+
+
+
+    </nav>
+
+
+</div>
+
+<style>
+    .global-nav__toggle[aria-expanded=true]+div {
+        display: block;
+    }
+
+    .global-nav__panel {
+        display: none;
+        margin: 0;
+    }
+
+    @media (min-width:80em) {
+        .global-nav__panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 5.5rem;
+            width: 18rem;
+            padding: 1.5rem 2rem 2rem;
+            z-index: -2;
+        }
+    }
+</style>

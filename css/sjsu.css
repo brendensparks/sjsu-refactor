@@ -1,0 +1,590 @@
+/* AXIOMS, via https://every-layout.dev/rudiments/axioms/
+
+Text elements no larger than 70ch.
+
+*/
+
+/* LAYERS
+from Modern CSS for Dynamic Component-based Architecture - Stephanie Eckles 
+layer order suggestion:
+@layer reset, theme, global, layout, components, utilities, states;
+*/
+
+@layer reset, theme, layout, components, utilities, states, overrides;
+
+@layer reset {
+
+:root {
+    --background-color: initial;
+    --text-color: initial;
+    --link-color: currentColor;
+    --font-body: system-ui, sans-serif;
+    --font-display: 'Times New Roman', serif;
+    --measure: 66ch;
+    --vr: 1rem; /* vr=vertical rhythm */
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    /* max-inline-size:var(--measure); */
+}
+
+html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    max-inline-size: none;
+}
+
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* img reset via Harry Roberts: https://twitter.com/csswizardry/status/1717841334462005661 */
+img {
+    max-width: 100%;    
+    height: auto;
+    vertical-align: middle;
+    font-style:italic;
+    background-repeat: no-repeat;
+    background-size: cover;
+    shape-margin: 0.75rem;
+
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+body {
+    min-height: 100vh;
+    line-height: 1.5;
+    max-inline-size: none;
+    font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+label {
+    line-height: 1.1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+    font-family: var(--font-display);
+}
+
+a {
+    color: var(--link-color);
+}
+
+/* <a> elements that don't have a class get default styles */
+a:not([class]) {
+    text-decoration-skip-ink: auto;
+    text-decoration-thickness: max(0.08em, 1px);
+    text-underline-offset: 0.15em;
+    color: var(--link-color);
+}
+
+a[aria-current] {
+    color: var(--text-color);
+}
+
+hr {
+    margin: var(--vr);
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+textarea:not([rows]) {
+    min-height: 10em
+}
+
+:target {
+    /* Scroll padding allowance above anchor links */
+    scroll-padding-block-start: 2rem;
+}
+
+:focus {
+    /* Scroll padding allowance below focused elements to ensure they are clearly in view */
+    scroll-padding-block-end: 8vh;
+}
+
+:focus-visible {
+    --outline-size: max(2px, 0.15em);
+    outline: var(--outline-width, var(--outline-size)) var(--outline-style, solid) var(--outline-color, currentColor);
+    outline-offset: var(--outline-offset, var(--outline-size));
+}
+
+@font-face {
+    font-family: 'SJSUSpartan';
+    font-weight: normal;
+    src: local('SJSUSpartanRegular'), url('/aspis/fonts/SJSUSpartanRegular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'SJSUSpartan';
+    font-weight: bold;
+    src: local('SJSUSpartanBold'), url('/aspis/fonts/SJSUSpartanBold.woff') format('woff');
+
+}
+}
+
+@layer theme {
+
+:root {
+    --sjsu-font-body: 'Helvetica Neue', system-ui, sans-serif;
+    --sjsu-font-display: 'Nunito Sans', Verdana, sans-serif;
+    --sjsu-font-spartan: 'SJSUSpartan', 'Times New Roman', serif;
+    --sjsu-color-blue: #0055a8;
+    --sjsu-color-gold: #e5a823;
+    --sjsu-color-rollover-blue: #1c88f4;
+    --sjsu-color-not-quite-black: #333333;
+    --sjsu-color-gray: #939597;
+    --sjsu-color-dark-gray: #53565a;
+    --sjsu-color-paseo-gray: #ededed;
+    --sjsu-color-normal-gray: #9b9b9b;
+    --sjsu-color-orange: #f08700;
+    --color-white: #ffffff;
+    --color-black: #000000;
+    /* vr = vertical rhythm */
+    --sjsu-vr: 2rem;
+    --sjsu-2vr: calc(2 * var(--sjsu-vr));
+    --sjsu-3vr: calc(3 * var(--sjsu-vr));
+    --sjsu-vr-half: calc(.5 * var(--sjsu-vr));
+    --sjsu-layout-width: 1280px;
+    --sjsu-grid-min: 30ch;
+    --sjsu-grid-gap: 2vw;
+    --padding: clamp(1rem, 3%, 1.5rem);
+    --padding-double: clamp(2rem, 6%, 3rem);
+    --padding-extra: clamp(4rem, 12%, 6rem);
+    --padding-half: clamp(0.5rem, 1.5%, 1rem);
+    --container-max: var(--sjsu-layout-width);
+
+    /* UTOPIA - fluid typography and type scale
+https: //utopia.fyi/type/calculator?c=320,18,1.2,1240,23,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12  */
+    --step--2: clamp(0.7813rem, 0.733rem + 0.2413vw, 0.92rem);
+    --step--1: clamp(0.9375rem, 0.8636rem + 0.3696vw, 1.15rem);
+    --step-0: clamp(1.125rem, 1.0163rem + 0.5435vw, 1.4375rem);
+    --step-1: clamp(1.35rem, 1.1946rem + 0.7772vw, 1.7969rem);
+    --step-2: clamp(1.62rem, 1.4022rem + 1.0891vw, 2.2463rem);
+    --step-3: clamp(1.9438rem, 1.6433rem + 1.5022vw, 2.8075rem);
+    --step-4: clamp(2.3325rem, 1.9232rem + 2.0467vw, 3.5094rem);
+    --step-5: clamp(2.7994rem, 2.2472rem + 2.7609vw, 4.3869rem);
+
+}
+
+body {
+    --background-color: var(--color-white);
+    --text-color: var(--sjsu-color-not-quite-black);
+    --font-body: var(--sjsu-font-body);
+    font-size: var(--step-0);
+}
+
+header, main, footer {
+    max-inline-size: var(--sjsu-layout-width);
+}
+
+
+h1 {
+    --font-display: var(--sjsu-font-display);
+    font-size: var(--step-4);
+}
+
+h2 {
+    --font-display: var(--sjsu-font-display);
+    font-size: var(--step-3);
+}
+
+h3 {
+    --font-display: var(--sjsu-font-display);
+    font-size: var(--step-2);
+}
+
+h4 {
+    --font-display: var(--sjsu-font-display);
+    font-size: var(--step-1);
+}
+
+h5 {
+    --font-display: var(--sjsu-font-display);
+    font-size: var(--step--1);
+}
+
+h6 {
+    --font-display: var(--sjsu-font-display);
+    font-size: var(--step--2);
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+}
+
+nav a:not(:hover) {
+    text-decoration: none;
+}
+
+blockquote {
+    /* previous settings 
+    max-width: 900px;
+    margin: 30px auto;
+    box-sizing: border-box;
+    padding: 30px 0 10px 60px;
+    position: relative;
+    line-height: 1.3;
+    color: #333333;
+    border: none;
+    */
+    --font-display: var(--sjsu-font-display);
+}
+
+blockquote::before {
+    content: "\201C";
+    position: absolute;
+    font-size: 4em;
+    font-weight: 800;
+    left: 0;
+    top: 0;
+}
+
+hr {
+    border-top: 1px solid var(--sjsu-color-normal-gray);
+}
+
+.title-page {
+    font-size:var(--step-4);
+}
+
+.title-parent-org {
+    font-size:var(--step-3);
+}
+
+.nav-site a {
+    padding-inline: var(--padding);    
+    padding-block: var(--padding-half);
+}
+
+/* indented nav 
+.nav-site a:not(:first-child) {
+    padding-inline-start: var(--padding);
+}
+
+.nav-site a:not(:last-child) {
+    padding-inline-end: var(--padding);
+}
+*/
+.nav-site a:hover, .nav-site a:focus {
+    --background-color: var(--sjsu-color-blue);
+    --text-color: var(--color-white);
+    --link-color: var(--color-white);
+}
+
+.sjsu-theme-blue {
+    --background-color: var(--sjsu-color-blue);
+    --text-color: var(--color-white);
+    --link-color: var(--color-white);
+}
+
+.sjsu-theme-light-gray {
+    --background-color: var(--sjsu-color-paseo-gray);
+    --text-color: var(--sjsu-color-not-quite-black);
+    --link-color: var(--sjsu-color-blue);
+}
+
+.sjsu-theme-default {
+    --background-color: var(--color-white);
+    --text-color: var(--sjsu-color-not-quite-black);
+    --link-color: var(--sjsu-color-blue);
+}
+
+}
+
+@layer layout {
+    :root {
+        --s0: 0;
+        --s1: 1rem;
+        --s2: 2rem;
+        --s3: 4rem;
+        --s4: 8rem;
+    }
+
+@layer primitives {
+
+    box-l {
+            display: block;
+            padding: var(--s1);
+            border-width: var(--border-thin);
+            /* ↓ For high contrast mode */
+            outline: var(--border-thin) solid transparent;
+            outline-offset: calc(var(--border-thin) * -1);
+        }
+
+center-l {
+display: block;
+box-sizing: content-box;
+margin-inline: auto;
+max-inline-size: var(--measure);
+}
+
+cluster-l {
+display: flex;
+flex-wrap: wrap;
+justify-content: flex-start;
+align-items: flex-start;
+}
+
+container-l {
+display: block;
+}
+
+cover-l {
+display: flex;
+flex-direction: column;
+min-block-size: 100vh;
+padding: var(--s1);
+}
+
+frame-l {
+aspect-ratio: 16 / 9;
+overflow: hidden;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+frame-l>img,
+frame-l>video {
+inline-size: 100%;
+block-size: 100%;
+object-fit: cover;
+}
+
+grid-l {
+display: grid;
+grid-gap: var(--s1);
+align-content: start;
+grid-template-columns: 100%;
+}
+
+grid-l {
+display: grid;
+grid-gap: var(--s1);
+align-content: start;
+grid-template-columns: 100%;
+}
+
+icon-l svg {
+height: 0.75em;
+height: 1cap;
+width: 0.75em;
+width: 1cap;
+}
+
+imposter-l {
+position: absolute;
+inset-block-start: 50%;
+inset-inline-start: 50%;
+transform: translate(-50%, -50%);
+}
+
+sidebar-l {
+display: flex;
+flex-wrap: wrap;
+}
+
+sidebar-l>* {
+flex-grow: 1;
+}
+
+stack-l {
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+}
+
+stack-l>*+* {
+margin-block-start: var(--s1);
+}
+
+switcher-l {
+display: flex;
+flex-wrap: wrap;
+}
+
+switcher-l>* {
+flex-basis: calc((var(--measure) - 100%) * 999);
+flex-grow: 1;
+}
+
+}
+
+
+
+
+/* from Scaling CSS Layout Beyond Pixels - Stephanie Eckles 
+
+Super flexible container element that automatically manages its own width based on the viewport size, trying to maintain at least 80ch width. No need to assign variable padding with media queries. */
+
+.container {
+    width: min(100vw - 2rem, var(--container-max, 80ch));
+    margin-inline: auto;
+}
+
+.wrap {
+    width: 100vw;
+}
+
+/* from Modern CSS for Dynamic Component-based Architecture - Stephanie Eckles
+This utility creates a responsive set of columns that are auto-generated depending on the amount of available inline space. Includes custom property to define the minimum allowed size for a column, which will function as a "breakpoint" for each column before causing the overflow to become new rows. For the most flexibility, I also like to include a custom property to allow overriding the `gap`. */
+
+.layout-grid {
+    --layout-grid-min: var(--sjsu-grid-min, 30ch);
+    --layout-grid-gap: var(--sjsu-grid-gap, 2vw);
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit,
+            minmax(min(100%, var(--layout-grid-min)), 1fr));
+    gap: var(--layout-grid-gap);
+}
+
+/* Container query */
+:is(.layout-grid, .flex-layout-grid)>* {
+    container: var(--grid-item-container, grid-item) / inline-size;
+}
+
+}
+
+@layer components {
+
+/* breadcrumb */
+/* a nav element for .bc? */
+.breadcrumb {
+    font-size: var(--step--2);
+    background: var(--sjsu-color-white);
+    
+    /* are these necessary if .bc inherits from nav?
+    /* theming aspects are necessary, but layout are not
+    /* not all <nav> elements are going to be styled the same way
+    display: block;
+    padding: calc(.5 * var(--sjsu-vr)) var(--sjsu-layout-width);
+    */
+}
+.breadcrumb>*:not(:last-child)::after {
+    margin-inline-end: 0.75rem;
+    margin-inline-start: 0.75rem;
+    opacity: 1;
+    content: url('https://www.sjsu.edu/aspis/media/icons/ui/icon-angle-bracket-right-sjsu-gray-small.svg');
+}
+/* not needed if nav
+/* there are some defaults set to links we need to revisit 
+
+.bc__menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.bc__item {
+    font-family: var(--sjsu-font-display);
+    line-height: 1;
+}
+
+.bc__item a:link {
+    text-decoration: none;
+}
+*/
+
+
+/* This component has a de-facto API that allows for modular control over features using custom properties. */
+.button {
+    color: var(--button-color, var(--primary));
+    background-color: var(--button-bg, var(--accent));
+}
+
+.button:where(:has(.icon)) {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.button:where(:has(.inclusively-hidden)) {
+    border-radius: 50%;
+    padding: 0.5em;
+}
+
+.button:where(:not(:has(.icon))) {
+    text-align: center;
+    min-inline-size: 10ch;
+}
+
+.button:where(:not(:has(.inclusively-hidden))) {
+    padding: var(--button-padding, 0.35em 1em);
+    border-radius: 0;
+}
+
+.button:hover {
+    --button-bg: var(--accent--alt);
+    --button-color: var(--primary);
+}
+
+.button:focus-visible {
+    --outline-style: dashed;
+    --outline-offset: -0.35em;
+}
+
+}
+
+@layer utilities {
+
+
+
+
+
+/* This class will limit text content to the value of the "line-clamp" property */
+.line-limit {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+}
+
+@layer states {
+    /* TK */
+}
+
+@layer overrides {
+    /* TK */
+}

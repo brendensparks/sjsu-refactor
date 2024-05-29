@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New SJSU Layout</title>
+    <meta name="Description" content="A demo page for a redesign of SJSU's main web template">
+
+    <link href="css/sjsu.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:600" rel="stylesheet" />
+
+    <script src="js/layout-primitives.js" type="module">//</script>
+    <script src="js/scripts.js">//</script>
+    <!-- PSU CDN fine for testing/dev, will need to compile local version later -->
+    <!-- https://webcomponents.psu.edu/?path=/story/about-getting-started--using-your-own-copy -->
+    <script>
+        window.__appCDN = 
+        "//cdn.webcomponents.psu.edu/cdn/";
+        window.__appForceUpgrade=false;
+        </script>
+        <script 
+        src="//cdn.webcomponents.psu.edu/cdn/build.js">
+    </script>    
+
+</head>
+
+<body>
+    <header>
+        <stack-l>
+            <div class="wrap sjsu-theme-blue">
+                <cluster-l justify="space-between" class=" container">
+                    <a class="sjsu-wordmark" href="#">San José State University</a>
+                    <cluster-l justify="flex-start">
+                        <button>
+                            <icon-l>
+                                <svg>
+                                    <use xlink:href="https://www.sjsu.edu/aspis/media/icons/ui/icon-hamburger-white.svg"></use>
+                                </svg>
+                                Menu
+                            </icon-l>
+                        </button>
+                        <button>
+                            <icon-l>
+                                <svg>
+                                    <use xlink:href="https://www.sjsu.edu/aspis/media/icons/ui/icon-search-white.svg"></use>
+                                </svg>
+                                Search
+                            </icon-l>
+                        </button>
+                    </cluster-l>
+
+                </cluster-l>
+            </div>
+            <div class="wrap sjsu-theme-light-gray">
+                <nav aria-label="breadcrumb">                    
+                    <cluster-l role="list" class="breadcrumb container">
+                        <a role="listitem" href="https://www.sjsu.edu/">Home</a>
+                        <a role="listitem" href="https://www.sjsu.edu/migration/">Migration</a>
+                        <a role="listitem" href="https://www.sjsu.edu/migration/showcase/">Showcase</a>
+                        <a role="listitem" aria-current="page">Landing Page Components</a>
+                    </cluster-l>
+                </nav>
+            </div>
+            <div class="wrap sjsu-theme-default">
+                <stack-l class="container">
+                <h1 class="title-site"><a href="#">New Web Template Migration</a></h1>
+                <a class="title-parent-org" href="#">College of Conjuration</a>
+                </stack-l>
+            </div>
+            <div class="wrap sjsu-theme-light-gray">
+                <nav id="sitenav" class="nav-site">
+                    <cluster-l justify="start" space="var(--s0)" role="list" class="container">
+                        <a role="listitem" href="/migration/get-help.php" class="gtm-nav-site">Get&nbsp;Help</a>
+                        <a role="listitem" href="/migration/process.php" class="gtm-nav-site">Process</a>
+                        <a role="listitem" href="/migration/getting-ready/index.php" class="gtm-nav-site">Getting Ready</a>
+                        <a role="listitem" href="/migration/showcase/index.php" class="gtm-nav-site">Showcase</a>
+                        <a role="listitem" href="/migration/training.php" class="gtm-nav-site">Training</a>
+                        <a role="listitem" href="/migration/feedback.php" class="gtm-nav-site">Feedback</a>
+                    </cluster-l>
+                </nav>
+            </div>            
+        </stack-l>
+    </header>
+    <main>
+        <div class="wrap sjsu-theme-default">
+            <div class="container">
+        <sidebar-l side="left" sideWidth="20%">
+            <nav class="nav-local">
+                <stack-l role="list">
+                    <a role="listitem" href="/migration/get-help.php" class="gtm-nav-site">Get&nbsp;Help</a>
+                    <a role="listitem" href="/migration/process.php" class="gtm-nav-site">Process</a>
+                    <a role="listitem" href="/migration/getting-ready/index.php" class="gtm-nav-site">Getting Ready</a>
+                    <a role="listitem" href="/migration/showcase/index.php" class="gtm-nav-site">Showcase</a>
+                    <a role="listitem" href="/migration/training.php" class="gtm-nav-site">Training</a>
+                    <a role="listitem" href="/migration/feedback.php" class="gtm-nav-site">Feedback</a>
+                </stack-l>
+            </nav>
+            <stack-l>
+                <h1>Page Title</h1>
+                <p>Content</p>                
+            </stack-l>
+        </sidebar-l>
+    </div>
+</div>
+    </main>
+
+
+    <footer class="container">
+
+            <sidebar-l side="right" sideWidth="50%">
+                <h2>Sitename or Parent Organization</h2>
+                <cluster-l>
+                    <icon-l>
+                        Insta
+                    </icon-l>
+                    <icon-l>
+                        LinkedIn
+                    </icon-l>
+                    <icon-l>
+                        Twitter
+                    </icon-l>
+                </cluster-l>
+                <grid-l>
+                    <box-l>
+                        <sidebar-l>
+                            <icon-l>
+                                phone.svg
+                            </icon-l>
+                            <stack-l>
+                                <h3>Contact Us</h3>
+                                <p>Phone</p>
+                                <p>Email</p>
+                            </stack-l>
+                        </sidebar-l>
+                    </box-l>
+                    <box-l>
+                        <sidebar-l>
+                            <icon-l>
+                                pin.svg
+                            </icon-l>
+                            <stack-l>
+                                <h3>Visit Office</h3>
+                                <p>One Washington Square<br />San Jose, CA 95192</p>
+                            </stack-l>
+                        </sidebar-l>
+                    </box-l>
+                </grid-l>
+            </sidebar-l>
+            -Contact region-
+            -Coin-
+            -Footer-
+    </footer>
+</body>
+
+</html>

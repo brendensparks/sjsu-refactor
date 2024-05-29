@@ -1,0 +1,19 @@
+With the ability to nest custom property declarations, I can finally achieve the modularity I was going for originally.
+
+A lot of the functional classes that get used a lot (o-wrap--content) can be tossed out.
+
+A lot of declarations can be removed from a lot of classes, since many things won't need to be repeated over and over again.
+
+== Single-use vs multi-use ==
+Markup inserted by end users (components mostly) will need to be simplified so they can be repeatable.
+
+Template markup can be minimized significantly. There aren't going to be a lot of changes or derivations of the core template, so a simpler class and markup schema will go a long way to a more maintainable codebase.
+
+For example, o-wrap is no longer necessary. Everything that had one before can just have a variable declared with an initial value. In the case of something needing to deviate (Hero Component...), the locally scoped variable declaration will override as necessary.
+
+With custom properties being able to much more dynamically handle media queries, it might be very possible to abandon the use of Foundation. Would need to create a few replacements:
+- mobile versions of menus
+- accordion component
+
+Look up an xsl function to build a conditional statement that converts headlines of media objects into h3s if there is a section title present or h2s if there isn'template
+
