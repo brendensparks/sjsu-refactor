@@ -39,11 +39,14 @@ layer order suggestion:
 * {
     --_background-color: var(--background-color, white);
     --_color: var(--color, var(--text-color, black));
-    --_max-inline-size:var(--measure,initial);
+    /*--_max-inline-size:var(--measure,initial);*/
     margin: 0;
     background-color: var(--_background-color);
     color: var(--_color);
+    /*
+    Definitely don't want this on *
     max-inline-size:var(--_max-inline-size);
+    */
 }
 
 html {
@@ -95,7 +98,7 @@ h4,
 button,
 input,
 label {
-    line-height: 1.1;
+    line-height: 1.1;    
 }
 
 h1,
@@ -111,15 +114,16 @@ h6 {
     font-size: var(--_font-size);
 }
 
-p, blockquote {
+p, blockquote, a {
     --_font-family: var(--font-body, inherit);
     --_font-size: var(--font-size, initial);
     font-family: var(--_font-family);
     font-size: var(--_font-size);
 }
 
-a {
-    --color: var(--link-color, blue);
+a {    
+    --_text-decoration: var(--text-decoration, underline);
+    --color: var(--link-color, blue);    
 }
 
 /* <a> elements that don't have a class get default styles */
@@ -232,10 +236,11 @@ body {
     font-family: var(--_font-family);    
 }
 
+/* hold off on forced-max-size until later, layout primitives handle this for now -b 5.29
 header, main, footer {
     max-inline-size: var(--sjsu-layout-width);
 }
-
+*/
 
 h1 {
     --font-family: var(--font-display, inherit);
@@ -267,12 +272,23 @@ h6 {
     --font-size: var(--step--1, initial);
 }
 
+a:hover,
+a:focus
+{
+    --link-color: var(--sjsu-color-rollover-blue);
+}
+
+a:is([class]):not(:hover) {
+    text-decoration: none;
+}
+
 nav ul {
     list-style-type: none;
     padding: 0;
     display: flex;
 }
 
+/* possibly redundant since nav.a elements also have classes -b 5.29 */
 nav a:not(:hover) {
     text-decoration: none;
 }
@@ -308,6 +324,11 @@ hr {
     --link-color: white;
 }
 
+.sjsu-theme-blue a:hover, 
+.sjsu-theme-blue a:focus {
+    --link-color: white;
+}
+
 .sjsu-theme-light-gray {
     --background-color: var(--sjsu-color-paseo-gray);
     --text-color: var(--sjsu-color-not-quite-black);
@@ -319,6 +340,7 @@ hr {
     --text-color: var(--sjsu-color-not-quite-black);
     --link-color: var(--sjsu-color-blue);
 }
+
 
 }
 
@@ -480,9 +502,9 @@ Super flexible container element that automatically manages its own width based 
 /* breadcrumb */
 /* a nav element for .bc? -b */
 .breadcrumb {
-    font-size: var(--step--2);
+    font-size: var(--step--1);
     background: var(--sjsu-color-white);
-    
+    margin-block: var(--sjsu-vr-half);
     /* are these necessary if .bc inherits from nav?
     /* theming aspects are necessary, but layout are not
     /* not all <nav> elements are going to be styled the same way
@@ -569,36 +591,124 @@ Are single-property CSS classes necessary for a templated page if we can pass va
 Yes; style should be as separated from the XSL as possible. -b 5.29
 */
 
-.title-site {
-    --font-size: var(--step-3);
+nav .menu {
+    flex-wrap:wrap;
+    flex-direction: row;
+    --font-size: var(--step--1);
 }
 
-.title-parent-org {
-    --font-size:var(--step-2);
+nav .menu.vertical {
+    flex-direction:vertical;
 }
+
+
+
+nav .nested li {
+    padding-inline-start: var(--sjsu-vr-half);
+}
+
+
+.nav-local {
+	margin-top:2rem;
+}
+
+.nav-local .nested {
+    margin-inline-start: 0;
+}
+
+.nav-local a {
+	padding-inline:var(--sjsu-vr-half);
+    padding-block:calc(0.5 * var(--sjsu-vr-half));
+}
+
+.nav-local__item {
+	font-size:0.8686rem;
+}
+
+.nav-local__item > a {
+	border-left-width:.375rem;
+	border-left-style:solid;
+	border-left-color:transparent;
+	text-decoration:none;
+}
+
+@media (hover: hover) {
+	.nav-local__item:not(.this-page) a:hover {
+		background-color:#ededed;
+		text-decoration:underline;
+	}		
+}
+
+.nav-local__item.this-page > a {
+	font-weight:bold;
+	border-color:#e5a823;
+}
+
+.nav-local__item--nested a {
+	font-weight:normal;
+	border-left-color:#0055a2;    
+	padding-left:2rem;
+}
+
+.nav-local__parent > a {
+	border-left:none;
+	padding-left:1.375rem;
+	text-indent:-1.375rem;
+	line-height:1.25;
+}
+
+.nav-local__parent > a::before {
+	content: "Back to ";
+	padding-left:1.375rem;
+	background-image:url(/aspis/media/icons/ui/icon-angle-bracket-left-sjsu-gray.svg);
+	background-repeat:no-repeat;
+	background-position:center left;
+}
+
+
 
 .nav-site a {
     padding-inline: var(--padding);    
     padding-block: var(--padding-half);
 }
 
-/* indented nav 
-.nav-site a:not(:first-child) {
-    padding-inline-start: var(--padding);
+.nav-site a:first-child {
+    margin-inline-start: calc(-1 * var(--padding));
 }
 
-.nav-site a:not(:last-child) {
-    padding-inline-end: var(--padding);
+.nav-site a:last-child {
+    margin-inline-end: calc(-1 * var(--padding));
 }
-*/
+
+
+/*
+This should be controlled using the theme class, otherwise it has to get re-declared with every theme variation on each affected element. -b 5.29
 .nav-site a:hover, .nav-site a:focus {
     --background-color: var(--sjsu-color-blue);
     --text-color: var(--color-white);
     --link-color: var(--color-white);
 }
+*/
 
 .title-page {
     --font-size:var(--step-4);
+    margin-block-start: var(--sjsu-vr-half);
+}
+
+.title-parent-org {
+    --font-size: var(--step-0);
+    margin-block: var(--sjsu-vr-half);
+}
+
+.title-site {
+    --font-size: var(--step-2);
+    font-weight: normal;
+    margin-block: var(--sjsu-vr-half);
+}
+
+.wordmark {
+    line-height:1.5;
+    margin-block: var(--sjsu-vr-half);
 }
 
 }
